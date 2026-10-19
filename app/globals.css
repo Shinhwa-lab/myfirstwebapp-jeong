@@ -13,6 +13,14 @@
   --color-grade-a: #4d7c0f;
   --color-grade-b: #a15c00;
   --color-grade-c: #b42318;
+  /* 수배 게시판 · 독촉 도장(자유 퀘스트) — 대비: ink/paper 13.72 · muted/paper 4.97 · blood/paper 6.86 · white/blood 8.28
+     tape/night 11.36 · paper/night 15.46 · fog/night 8.87 · siren/night 6.05 · blood/tape 5.04 */
+  --color-paper: #f3e9d2;
+  --color-night: #15120f;
+  --color-tape: #f5c400;
+  --color-blood: #9e1010;
+  --color-siren: #ff5a4a;
+  --color-fog: #b9b2a6;
 
   --font-sans: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
@@ -32,4 +40,91 @@ body {
 .num {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+}
+
+/* 폴리스라인 테이프: 노랑 · 검정 빗금 */
+.caution-stripes {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--color-tape) 0 16px,
+    var(--color-night) 16px 32px
+  );
+}
+
+/* 찢어진 종이 가장자리(위아래 톱니) */
+.torn {
+  clip-path: polygon(
+    0% 2%, 6% 0%, 12% 2%, 19% 0%, 26% 1.5%, 33% 0%, 41% 2%, 48% 0%, 56% 1.5%, 63% 0%, 71% 2%, 78% 0%, 86% 1.5%, 93% 0%, 100% 2%,
+    100% 98%, 94% 100%, 87% 98.5%, 80% 100%, 72% 98%, 65% 100%, 57% 98.5%, 50% 100%, 42% 98%, 35% 100%, 27% 98.5%, 20% 100%, 12% 98%, 6% 100%, 0% 98%
+  );
+}
+
+/* 도장 찍을 때 화면 흔들림 · 잉크 튐 · '쾅!' */
+@keyframes shake {
+  0%, 100% { transform: translate(0, 0); }
+  15% { transform: translate(-6px, 3px) rotate(-0.6deg); }
+  30% { transform: translate(5px, -4px) rotate(0.5deg); }
+  45% { transform: translate(-4px, 2px); }
+  60% { transform: translate(3px, -2px); }
+  80% { transform: translate(-2px, 1px); }
+}
+
+html.shaking {
+  overflow-x: hidden;
+}
+
+html.shaking body {
+  animation: shake 420ms ease-out;
+}
+
+@keyframes splat {
+  0% { opacity: 0; transform: scale(0.2); }
+  70% { opacity: 1; transform: scale(1.08); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.splat-in {
+  animation: splat 300ms ease-out 120ms both;
+}
+
+@keyframes boom {
+  0% { opacity: 0; transform: scale(0.3) rotate(-20deg); }
+  50% { opacity: 1; transform: scale(1.2) rotate(8deg); }
+  100% { opacity: 1; transform: scale(1) rotate(6deg); }
+}
+
+.boom-in {
+  animation: boom 320ms cubic-bezier(0.2, 0.9, 0.3, 1.4) 80ms both;
+}
+
+/* 독촉 도장: 크게 떠 있다가 쾅 내려앉는다 */
+@keyframes stamp-in {
+  0% {
+    opacity: 0;
+    transform: scale(2.6) rotate(-4deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(0.92) rotate(-11deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(-9deg);
+  }
+}
+
+.stamp-in {
+  animation: stamp-in 260ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stamp-in {
+    animation: none;
+    transform: rotate(-9deg);
+  }
+  .splat-in,
+  .boom-in,
+  html.shaking body {
+    animation: none;
+  }
 }

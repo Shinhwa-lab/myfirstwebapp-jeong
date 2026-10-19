@@ -4,7 +4,7 @@ import SiteNav from "@/components/SiteNav";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: { default: "한빛정밀 웹 작업대", template: "%s · 한빛정밀 웹 작업대" },
+  title: { default: "한빛정밀 수배자 명단", template: "%s · 한빛정밀 수배자 명단" },
   description: "(가상) 한빛정밀(주)의 합성 데이터로 만드는 사내 웹앱 — 4–6일차 실습",
 };
 

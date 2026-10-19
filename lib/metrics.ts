@@ -46,6 +46,22 @@ export function byRegion(buyers: Buyer[]) {
     .sort((a, b) => b.ar - a.ar);
 }
 
+// 수배 게시판(/wanted): C등급만, 연체 금액이 큰 순 · 같으면 id 순, 그리고 연체 합계
+export function wanted(buyers: Buyer[]) {
+  const list = buyers
+    .filter((b) => b.grade === "C")
+    .sort((a, b) => b.overdueUsd - a.overdueUsd || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+  return { list, bountyTotal: list.reduce((s, b) => s + b.overdueUsd, 0) };
+}
+
+// 밀린 일수 단계: 3 = 90일 이상 · 2 = 60일 이상 · 1 = 30일 이상 · 0 = 그 아래(이름 붙이기는 화면에서)
+export function overdueTier(oldestOpenDays: number): 0 | 1 | 2 | 3 {
+  if (oldestOpenDays >= 90) return 3;
+  if (oldestOpenDays >= 60) return 2;
+  if (oldestOpenDays >= 30) return 1;
+  return 0;
+}
+
 export function isGrade(v: unknown): v is Grade {
   return typeof v === "string" && (GRADES as string[]).includes(v);
 }

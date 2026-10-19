@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import GradeBadge from "@/components/GradeBadge";
 import PageHeader from "@/components/PageHeader";
+import StampButton from "@/components/StampButton";
 import { getBuyer } from "@/lib/buyers";
 import { pct, usd } from "@/lib/format";
 
@@ -71,6 +72,8 @@ export default async function Page({ params }: Props) {
         )}
         <p className="text-sm text-muted">이 신호들은 확인해 볼 이유이지, 연체의 원인이라는 뜻은 아닙니다.</p>
       </section>
+
+      <StampButton overdue={usd(buyer.overdueUsd)} days={`${buyer.oldestOpenDays}일`} clean={buyer.overdueUsd <= 0} />
 
       <Link href="/buyers" className="inline-flex min-h-11 items-center rounded-md border border-line px-4 text-accent">
         바이어 목록으로

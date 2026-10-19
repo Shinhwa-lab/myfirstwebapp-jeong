@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="한빛정밀 웹 작업대"
+        title="한빛정밀 수배자 명단"
         asof="2026-09-30 · (가상) 합성 데이터"
         line="바이어 채권 · 등급을 휴대폰에서 보는 사내 웹앱입니다. 쪽은 실습에서 하나씩 더합니다."
       />
