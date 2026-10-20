@@ -6,6 +6,8 @@ import { getBuyers } from "@/lib/buyers";
 import { overdueTier, wanted } from "@/lib/metrics";
 import { int, usd } from "@/lib/format";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = { title: "수배" };
 
 // 자유 퀘스트: C등급 바이어를 뒷골목 채권 회수 사무실의 현상수배 전단처럼.

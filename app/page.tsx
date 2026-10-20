@@ -1,16 +1,23 @@
-import buyers from "@/data/buyers.json";
+import Link from "next/link";
 import DeployBadge from "@/components/DeployBadge";
 import KpiCard from "@/components/KpiCard";
 import Notice from "@/components/Notice";
 import PageHeader from "@/components/PageHeader";
-import { int, pct, usd } from "@/lib/format";
+import ReviewStatusBadge from "@/components/ReviewStatusBadge";
+import { getBuyers } from "@/lib/buyers";
+import { int, kst, pct, usd } from "@/lib/format";
+import { getRecentReviews } from "@/lib/reviews";
 
-// 첫 화면 — 숫자는 data/buyers.json에서 그때그때 계산한다(손으로 적은 숫자 없음).
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+// 첫 화면 — 숫자는 DB에서 읽은 바이어로 그때그때 계산한다(손으로 적은 숫자 없음).
+export default async function Home() {
+  const buyers = await getBuyers();
   const total = buyers.length;
   const gradeC = buyers.filter((b) => b.grade === "C");
   const arAll = buyers.reduce((sum, b) => sum + b.openArUsd, 0);
   const arC = gradeC.reduce((sum, b) => sum + b.openArUsd, 0);
+  const recent = (await getRecentReviews(5)).map((r) => ({ ...r, at: kst(r.createdAt) }));
 
   return (
     <div className="space-y-6">
@@ -21,7 +28,7 @@ export default function Home() {
       />
 
       <section aria-label="요약 숫자" className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <KpiCard label="바이어" value={`${int(total)}곳`} sub="data/buyers.json" />
+        <KpiCard label="바이어" value={`${int(total)}곳`} sub="Supabase DB에서 읽음" />
         <KpiCard label="C등급" value={`${int(gradeC.length)}곳`} sub="등급은 데이터의 grade 칸 그대로" />
         <KpiCard label="C등급 채권" value={usd(arC)} sub={`전체 미결 ${usd(arAll)}의 ${pct(arAll > 0 ? arC / arAll : null)}`} />
       </section>
@@ -30,6 +37,35 @@ export default function Home() {
         휴대폰으로도 같은 주소를 열어 보세요. 아래 배지가 <span className="num">production · 커밋 7자리 · icn1</span>이면
         Vercel 서버(서울)에서 도는 중이고, <span className="num">내 PC · development</span>이면 내 PC에서 도는 중입니다.
       </Notice>
+
+      <section aria-labelledby="recent-reviews" className="space-y-3">
+        <h2 id="recent-reviews" className="text-lg font-semibold text-ink">
+          최근 확인 기록
+        </h2>
+        {recent.length > 0 ? (
+          <ul className="divide-y divide-line rounded-lg border border-line">
+            {recent.map((r) => (
+              <li key={r.id} className="space-y-1 p-3">
+                <Link
+                  href={`/buyers/${r.buyerId}`}
+                  className="flex min-h-11 items-center text-accent underline-offset-2 hover:underline"
+                >
+                  <span>
+                    <span className="num">{r.buyerId}</span> · {r.buyer.name}
+                  </span>
+                </Link>
+                <ReviewStatusBadge status={r.status} />
+                <p className="whitespace-pre-line text-ink">{r.memo}</p>
+                <p className="text-sm text-muted">
+                  {r.reviewer} · <span className="num">{r.at}</span>
+                </p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-muted">아직 확인 기록이 없습니다</p>
+        )}
+      </section>
 
       <DeployBadge />
     </div>

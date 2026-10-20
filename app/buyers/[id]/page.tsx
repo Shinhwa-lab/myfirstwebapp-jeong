@@ -4,9 +4,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import GradeBadge from "@/components/GradeBadge";
 import PageHeader from "@/components/PageHeader";
+import ReviewForm from "@/components/ReviewForm";
+import ReviewStatusBadge from "@/components/ReviewStatusBadge";
 import StampButton from "@/components/StampButton";
 import { getBuyer } from "@/lib/buyers";
-import { pct, usd } from "@/lib/format";
+import { kst, pct, usd } from "@/lib/format";
+import { getReviews } from "@/lib/reviews";
+
+export const dynamic = "force-dynamic";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -20,6 +25,8 @@ export default async function Page({ params }: Props) {
   const { id } = await params;
   const buyer = await getBuyer(id);
   if (!buyer) notFound();
+
+  const reviews = (await getReviews(buyer.id)).map((r) => ({ ...r, at: kst(r.createdAt) }));
 
   const facts: { label: string; value: ReactNode; num?: boolean }[] = [
     { label: "나라", value: buyer.countryKo },
@@ -71,6 +78,28 @@ export default async function Page({ params }: Props) {
           <p className="text-muted">표에 적힌 신호가 없습니다.</p>
         )}
         <p className="text-sm text-muted">이 신호들은 확인해 볼 이유이지, 연체의 원인이라는 뜻은 아닙니다.</p>
+      </section>
+
+      <section aria-labelledby="reviews" className="space-y-3">
+        <h2 id="reviews" className="text-lg font-semibold text-ink">
+          확인 기록
+        </h2>
+        <ReviewForm buyerId={buyer.id} />
+        {reviews.length > 0 ? (
+          <ul className="divide-y divide-line rounded-lg border border-line">
+            {reviews.map((r) => (
+              <li key={r.id} className="space-y-1 p-3">
+                <ReviewStatusBadge status={r.status} />
+                <p className="whitespace-pre-line text-ink">{r.memo}</p>
+                <p className="text-sm text-muted">
+                  {r.reviewer} · <span className="num">{r.at}</span>
+                </p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-muted">아직 확인 기록이 없습니다</p>
+        )}
       </section>
 
       <StampButton overdue={usd(buyer.overdueUsd)} days={`${buyer.oldestOpenDays}일`} clean={buyer.overdueUsd <= 0} />
