@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import GradeBadge from "@/components/GradeBadge";
 import PageHeader from "@/components/PageHeader";
 import ReviewForm from "@/components/ReviewForm";
-import ReviewStatusBadge from "@/components/ReviewStatusBadge";
+import ReviewList from "@/components/ReviewList";
 import StampButton from "@/components/StampButton";
 import { getBuyer } from "@/lib/buyers";
 import { kst, pct, usd } from "@/lib/format";
@@ -85,21 +85,7 @@ export default async function Page({ params }: Props) {
           확인 기록
         </h2>
         <ReviewForm buyerId={buyer.id} />
-        {reviews.length > 0 ? (
-          <ul className="divide-y divide-line rounded-lg border border-line">
-            {reviews.map((r) => (
-              <li key={r.id} className="space-y-1 p-3">
-                <ReviewStatusBadge status={r.status} />
-                <p className="whitespace-pre-line text-ink">{r.memo}</p>
-                <p className="text-sm text-muted">
-                  {r.reviewer} · <span className="num">{r.at}</span>
-                </p>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-muted">아직 확인 기록이 없습니다</p>
-        )}
+        <ReviewList reviews={reviews} />
       </section>
 
       <StampButton overdue={usd(buyer.overdueUsd)} days={`${buyer.oldestOpenDays}일`} clean={buyer.overdueUsd <= 0} />

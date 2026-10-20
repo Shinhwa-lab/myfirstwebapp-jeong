@@ -30,5 +30,6 @@ export async function addReview(prev: ReviewState, formData: FormData): Promise<
 
   revalidatePath(`/buyers/${buyerId}`);
   revalidatePath("/");
+  revalidatePath("/vault");
   return { ok: true, message: "저장했습니다 — 새로 고쳐도 남아 있습니다" };
 }

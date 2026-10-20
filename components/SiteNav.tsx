@@ -1,7 +1,8 @@
 import Link from "next/link";
+import Logo from "@/components/Logo";
 
 // 위쪽 메뉴. 쪽을 더하면 여기에 한 줄을 더한다(예: { href: "/buyers", label: "바이어" }).
-export const NAV_ITEMS: { href: string; label: string }[] = [{ href: "/", label: "홈" }, { href: "/buyers", label: "바이어" }, { href: "/wanted", label: "수배" }];
+export const NAV_ITEMS: { href: string; label: string }[] = [{ href: "/", label: "홈" }, { href: "/buyers", label: "바이어" }, { href: "/wanted", label: "수배" }, { href: "/vault", label: "금고" }];
 
 export default function SiteNav() {
   return (
@@ -10,7 +11,8 @@ export default function SiteNav() {
         aria-label="주 메뉴"
         className="mx-auto flex w-full max-w-5xl flex-wrap items-center gap-x-4 gap-y-1 px-4 py-2 sm:px-6"
       >
-        <Link href="/" className="mr-2 flex min-h-11 items-center font-semibold text-ink">
+        <Link href="/" className="mr-2 flex min-h-11 items-center gap-2 font-semibold text-ink">
+          <Logo />
           한빛정밀 수배자 명단
         </Link>
         <ul className="flex flex-wrap items-center gap-x-1">
